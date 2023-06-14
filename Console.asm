@@ -4,6 +4,15 @@ model tiny
 
 locals @@
 
+public Console_GreyPalette
+public Console_DrawRect
+public Console_Fill
+public Console_SetColor
+public Console_ClearColor
+public Console_ChgColor
+public Console_SetCursorPos
+public Console_ColorStrPrint
+
 EscPrint1 db 1bh, '['
 EscPrint2 db 16 dup (?)
 
@@ -12,6 +21,8 @@ arg GreyTrue:byte
     mov ah, 12h
     mov bl, 33h
     mov al, GreyTrue
+    sub al, 1
+    neg al
     int 10h
     ret
 endp

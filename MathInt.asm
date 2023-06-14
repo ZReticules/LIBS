@@ -14,6 +14,7 @@ public IntPrint
 public IntScan
 public Random
 public IntLen
+public IntPow
 
 ChArrInt proc c far uses si ebx 
 arg StrLink:word, StrLen:word
@@ -120,6 +121,19 @@ mov ten, 10
     cmp eax, 0
     jne @@diving
     mov eax, count
+    ret
+endp
+
+IntPow proc C far uses ecx
+arg Base:dword, Power:dword
+    mov eax, 1
+    mov ecx, Power
+    test ecx, ecx
+    jz @@retf
+        @@multiple:
+            imul Base
+        loopnz @@multiple
+    @@retf:
     ret
 endp
 
