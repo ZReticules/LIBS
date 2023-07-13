@@ -12,7 +12,7 @@ WorkMods dw offset C_StringMode
          dw offset P_StringMode
          dw offset PrintMode
 
-IntConvertio proc c far uses edx eax bx si
+IntConvertio proc c far uses edx bx si es
 arg Num:dword, WorkMode:word, ArrLink:word
 local Diver:dword,Ten:dword,Zflag:byte:1,ArrLen:byte:1, AddressReturn:word
 mov Diver, 1000000000
@@ -20,9 +20,9 @@ mov zflag, 0
 mov ArrLen, 0
 mov Ten, 10
 mov ax, seg CStrMode
-mov ds, ax
+mov es, ax
     mov bx, WorkMode
-    mov si, WorkMods[bx]
+    mov si, es:WorkMods[bx]
     mov WorkMode, si
     mov si, ArrLink
     cmp num, 0
@@ -84,9 +84,9 @@ ret
 
     C_StringMode:
         inc ArrLen
-        inc si
-        mov [si], al
+        mov ds:[si], al
         mov byte ptr [si+1], 0
+        inc si
     jmp AddressReturn
 
     PrintMode:
