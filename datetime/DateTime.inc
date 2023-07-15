@@ -1,5 +1,27 @@
 StartPoint equ 1980
 
+extrn DateTime_GetHourMinuteSecond  :far
+extrn DateTime_GetSecond            :far
+extrn DateTime_GetMinute            :far
+extrn DateTime_GetHour              :far
+extrn DateTime_GetYearMonthDay      :far
+extrn DateTime_GetYear              :far
+extrn DateTime_GetMonth             :far
+extrn DateTime_GetDay               :far
+extrn DateTime_InToUnix             :far
+extrn DateTime_StrToUnix            :far
+extrn DateTime_UnixToStr            :far
+extrn DateTime_GetNow               :far
+extrn DateTime_AddMonth             :far
+extrn DateTime_AddYear              :far
+extrn TimeSpan_GetSecond            :far
+extrn TimeSpan_GetMinute            :far
+extrn TimeSpan_GetHour              :far
+extrn TimeSpan_GetDay               :far
+extrn TimeSpan_InToUnix             :far
+extrn TimeSpan_UnixToStr            :far
+extrn TimeSpan_StrToUnix            :far
+
 DateTime struc global method{
         New:dword       = DateTime_InToUnix
         FromString:dword= DateTime_StrToUnix
