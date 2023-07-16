@@ -21,31 +21,41 @@ extrn TimeSpan_GetDay               :far
 extrn TimeSpan_InToUnix             :far
 extrn TimeSpan_UnixToStr            :far
 extrn TimeSpan_StrToUnix            :far
+extrn DateTime_AddDay               :far
+extrn DateTime_AddHour              :far
+extrn DateTime_AddMinute            :far
 
 DateTime struc global method{
         New:dword       = DateTime_InToUnix
         FromString:dword= DateTime_StrToUnix
         ToString:dword  = DateTime_UnixToStr
+        GetNow:dword    = DateTime_GetNow
         GetSecond:dword = DateTime_GetSecond
         GetMinute:dword = DateTime_GetMinute
         GetHour:dword   = DateTime_GetHour
         GetDay:dword    = DateTime_GetDay
         GetMonth:dword  = DateTime_GetMonth
         GetYear:dword   = DateTime_GetYear
-        AddMonth:dword  = DateTime_AddMonth
         AddYear:dword   = DateTime_AddYear
+        AddMonth:dword  = DateTime_AddMonth
+        AddDay:dword    = DateTime_AddDay
+        AddHour:dword   = DateTime_AddHour
+        AddMinute:dword = DateTime_AddMinute
     }
     dd ?
 ends
 
 TimeSpan struc global method{
         New:dword       = TimeSpan_InToUnix
-        ToString:dword  = TimeSpan_UnixToStr
         FromString:dword= TimeSpan_StrToUnix
+        ToString:dword  = TimeSpan_UnixToStr
         GetSecond:dword = TimeSpan_GetSecond
         GetMinute:dword = TimeSpan_GetMinute
         GetHour:dword   = TimeSpan_GetHour
         GetDay:dword    = TimeSpan_GetDay
+        AddDay:dword    = DateTime_AddDay
+        AddHour:dword   = DateTime_AddHour
+        AddMinute:dword = DateTime_AddMinute
     }
     dd ?
 ends

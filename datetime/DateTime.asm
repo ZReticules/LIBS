@@ -5,7 +5,7 @@ org 100h
 
 locals @@
 
-include DateTime.inc
+StartPoint equ 1980
 
 PushMonths label word
 Months db 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
@@ -31,6 +31,9 @@ public TimeSpan_GetDay
 public TimeSpan_InToUnix
 public TimeSpan_UnixToStr
 public TimeSpan_StrToUnix
+public DateTime_AddDay
+public DateTime_AddHour
+public DateTime_AddMinute
 
 DateTime_GetHourMinuteSecond proc C far uses esi
     xor edx, edx
@@ -62,7 +65,7 @@ arg @DateTime:dword
     ret
 endp
 
-DateTime_GetHour proc C far uses edx
+DateTime_GetHour proc C far uses ecx ebx edx
 arg @DateTime:dword
     mov eax, @DateTime
     call DateTime_GetHourMinuteSecond
@@ -211,7 +214,7 @@ AsciToInt proc
     ret
 endp
 
-DateTime_UnixToStr proc C far uses si bx ds eax
+DateTime_UnixToStr proc C far uses si ebx ds eax ecx edx
 arg @DateTime:dword, StrLongLink:dword
     lds si, StrLongLink
     mov eax, @DateTime
@@ -257,7 +260,7 @@ InToAsci proc
     ret
 endp
 
-DateTime_GetNow proc C far uses ecx edx
+DateTime_GetNow proc C far uses ecx edx bx
     xor bx, bx
     mov ah, 2Ch
     int 21h
@@ -368,7 +371,7 @@ arg @TimeSpan:DWORD
     ret
 endp
 
-TimeSpan_GetDay proc c far uses edx esi
+TimeSpan_GetDay proc c far uses edx ebx esi
 arg @@TimeSpan:dword 
     xor edx, edx
     mov eax, @@TimeSpan
@@ -378,8 +381,8 @@ arg @@TimeSpan:dword
         neg eax
     js @@Abs
     mov ebx, 24*3600
-    idiv ebx
     xor edx, edx
+    idiv ebx
     imul esi
     ret
 endp
@@ -425,7 +428,7 @@ arg @TimeSpan:DWORD, StrLongLink:DWORD
     call InToAsci
     mov [si+7], ax
     mov [si+6], byte ptr '.'
-    call 0 method TimeSpan:GetDay C, @TimeSpan
+    call TimeSpan_GetDay C, @TimeSpan
     @@Abs1:
         neg eax
     js @@Abs1
@@ -446,7 +449,7 @@ arg @TimeSpan:DWORD, StrLongLink:DWORD
     ret
 endp
 
-TimeSpan_StrToUnix proc C far uses edx ecx ebx si
+TimeSpan_StrToUnix proc C far uses edx ecx ebx si edi
 arg LStrLink:DWORD
     lds si, LStrLink
     mov edi, 1
@@ -472,10 +475,39 @@ arg LStrLink:DWORD
         inc bx
     cmp bx, 5
     jle @@MulLoop
-    call 0 method TimeSpan:New StdCall, ax
-    sub esp, 8
+    call TimeSpan_InToUnix StdCall, ax
+    add esp, 8
     xor edx, edx
     imul edi
+    ret
+endp
+
+;следующая процедура является служебной. Кривыми руками не лезть!
+;первый аргумент - количество, адрес состоит из:
+; 1. Адреса возврата (близкий адрес -> 2 байта) 
+; 2. Коэффициента dword (4)
+; 3. Адреса возврата внешней процедуры (дальний адрес, 4 байта)
+; 4. Исходной даты dword (4 байта)
+
+DateTime_Add proc C near
+    movsx eax, word ptr [esp+14]    ;получаем количество дней/часов/минут
+    imul eax, [esp+2]               ;умножаем на соответствующий коэффициент
+    add eax, [esp+10]               ;складываем с исходной датой
+    ret
+endp
+
+DateTime_AddDay proc C far
+    call DateTime_Add C, dword ptr 24*3600
+    ret
+endp
+
+DateTime_AddHour proc C far
+    call DateTime_Add C, dword ptr 3600
+    ret
+endp
+
+DateTime_AddMinute proc C far
+    call DateTime_Add C, dword ptr 60
     ret
 endp
 
