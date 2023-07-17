@@ -34,6 +34,8 @@ public TimeSpan_StrToUnix
 public DateTime_AddDay
 public DateTime_AddHour
 public DateTime_AddMinute
+public DateTime_SetDate
+public DateTime_SetTime
 
 DateTime_GetHourMinuteSecond proc C far uses esi
     xor edx, edx
@@ -277,7 +279,6 @@ DateTime_GetNow proc C far uses ecx edx bx
     mov bl, dh
     push bx
     mov bx, cx
-    add cx, 1980
     call DateTime_InToUnix StdCall, bx
     add esp, 12
     ret
@@ -508,6 +509,27 @@ endp
 
 DateTime_AddMinute proc C far
     call DateTime_Add C, dword ptr 60
+    ret
+endp
+
+DateTime_SetDate proc C far uses eax ebx ecx
+    mov eax, [esp+16]
+    call DateTime_GetYearMonthDay
+    mov dl, al
+    mov dh, bl
+    mov ah, 2bh
+    int 21h
+    ret
+endp
+;следующая процедура не работает в DosBox.
+DateTime_SetTime proc C far uses eax ebx ecx edx
+    mov eax, [esp+20]
+    call DateTime_GetHourMinuteSecond
+    mov dh, cl
+    xchg ch, dl
+    mov cl, bl
+    mov ah, 2dh
+    int 21h
     ret
 endp
 

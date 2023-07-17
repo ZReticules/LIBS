@@ -24,6 +24,8 @@ extrn TimeSpan_StrToUnix            :far
 extrn DateTime_AddDay               :far
 extrn DateTime_AddHour              :far
 extrn DateTime_AddMinute            :far
+extrn DateTime_SetDate              :far
+extrn DateTime_SetTime              :far
 
 DateTime struc global method{
         New:dword       = DateTime_InToUnix
@@ -41,6 +43,8 @@ DateTime struc global method{
         AddDay:dword    = DateTime_AddDay
         AddHour:dword   = DateTime_AddHour
         AddMinute:dword = DateTime_AddMinute
+        SetDate:dword   = DateTime_SetDate
+        SetTime:dword   = DateTime_SetTime
     }
     dd ?
 ends
