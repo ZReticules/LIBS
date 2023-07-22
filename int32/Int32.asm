@@ -36,7 +36,7 @@ Int32_ToString proc C far uses edx di es cx ebx
         mov es:[di], dl
         inc di
     loop @B
-    mov es:[di+1], byte ptr 0
+    mov es:[di], byte ptr 0
     sub di, @@StrLink
     mov ax, di
     ret
