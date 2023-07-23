@@ -17,9 +17,8 @@ ends
 
 Int32_Abs macro @@Num
 local @@Abs, @@Exit
-    mov eax, @@Num
     @@Abs:
-        neg eax
+        neg @@Num
     jo @@Exit
     js @@Abs
     @@Exit:
