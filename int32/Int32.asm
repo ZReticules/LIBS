@@ -11,6 +11,28 @@ VERSION M520
 
 locals __
 
+FastDiv10_Const equ 0CCCCCCCDh
+
+FastDiv10 macro arg:req
+    mul arg
+    shr edx, 3
+endm
+
+FastDiv10_WithOst macro reg32:req
+.ERRIDNI <reg32>, <eax> "Wrong register, don't use eax or edx"
+.ERRIDNI <reg32>, <edx> "Wrong register, don't use eax or edx"
+    mov reg32, FastDiv10_Const
+    push eax
+    mul reg32
+    shr edx, 3
+    mov reg32, edx
+    lea eax, [edx*4+edx]
+    shl eax, 1
+    pop edx
+    sub edx, eax
+    mov eax, reg32
+endm
+
 Int32_ToString proc C far uses edx di es cx ebx
 @@StrLink equ [esp+18]
 @@Num equ dword ptr [esp+22]
@@ -24,8 +46,7 @@ Int32_ToString proc C far uses edx di es cx ebx
         neg eax
         inc di
     @@:
-        xor edx, edx
-        div ebx
+        FastDiv10_WithOst ebx
         add dl, 30h
         push dx
         inc cx
@@ -72,7 +93,7 @@ endp
 Int32_Length proc C far uses edx cx ebx
 @@Num equ [esp+14]
     mov cx, 2
-    mov ebx, 10
+    mov ebx, FastDiv10_Const
     mov eax, @@Num
     @@:
         dec cx
@@ -80,8 +101,8 @@ Int32_Length proc C far uses edx cx ebx
     jo @F
     js @B
     @@:
-        xor edx, edx
-        div ebx
+        FastDiv10 ebx
+        mov eax, edx
         inc cx
     test eax, eax
     jnz @B
