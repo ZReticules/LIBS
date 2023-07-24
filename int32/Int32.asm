@@ -120,10 +120,15 @@ Int32_Power proc C far uses ecx edx ebx
     test ecx, ecx
     jz @@retf
         mov ebx, @@Base
-        @@:
-            imul ebx
-        dec ecx
-        jnz @B
+       __Mulling:
+            test ecx, 1
+            jz @F
+                imul ebx
+            @@:
+            imul ebx, ebx
+            shr ecx, 1
+        test ecx, ecx
+        jnz __Mulling
     @@retf:
     ret
 endp
