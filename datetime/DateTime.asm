@@ -52,7 +52,7 @@ DateTime_GetHourMinuteSecond proc C far uses esi
 endp
 
 DateTime_GetSecond proc C far uses ecx ebx edx
-arg @DateTime:dword
+@DateTime equ [esp+16]
     mov eax, @DateTime
     call DateTime_GetHourMinuteSecond
     mov eax, ecx
@@ -60,7 +60,7 @@ arg @DateTime:dword
 endp
 
 DateTime_GetMinute proc C far uses ecx ebx edx
-arg @DateTime:dword
+@DateTime equ [esp+16]
     mov eax, @DateTime
     call DateTime_GetHourMinuteSecond
     mov eax, ebx
@@ -68,7 +68,7 @@ arg @DateTime:dword
 endp
 
 DateTime_GetHour proc C far uses ecx ebx edx
-arg @DateTime:dword
+@DateTime equ [esp+16]
     mov eax, @DateTime
     call DateTime_GetHourMinuteSecond
     mov eax, edx
@@ -112,7 +112,7 @@ DateTime_GetYearMonthDay proc C far uses edx esi edi ds PushMonths
 endp
 
 DateTime_GetYear proc C far uses ecx ebx
-arg @DateTime:dword
+@DateTime equ [esp+12]
     mov eax, @DateTime
     call DateTime_GetYearMonthDay
     mov eax, ecx
@@ -120,7 +120,7 @@ arg @DateTime:dword
 endp
 
 DateTime_GetMonth proc C far uses ecx ebx
-arg @DateTime:dword
+@DateTime equ [esp+12]
     mov eax, @DateTime
     call DateTime_GetYearMonthDay
     mov eax, ebx
@@ -128,14 +128,19 @@ arg @DateTime:dword
 endp
 
 DateTime_GetDay proc C far uses ecx ebx
-arg @DateTime:dword
+@DateTime equ [esp+12]
     mov eax, @DateTime
     call DateTime_GetYearMonthDay
     ret
 endp
 
 DateTime_InToUnix proc C far uses edx ecx edx ebx esi PushMonths
-arg Year:word, Month:word, Day:word, Hour:word, Minute:word, Second:word
+Year    equ word ptr [esp+26]
+Month   equ word ptr [esp+28]
+Day     equ word ptr [esp+30]
+Hour    equ word ptr [esp+32]
+Minute  equ word ptr [esp+34]
+Second  equ word ptr [esp+36]
     mov ax, seg Months
     mov ds, ax
     xor ecx, ecx
@@ -185,7 +190,7 @@ arg Year:word, Month:word, Day:word, Hour:word, Minute:word, Second:word
 endp
 
 DateTime_StrToUnix proc C far uses si bx ds
-arg StrLongLink:dword
+StrLongLink equ [esp+10]
     lds si, StrLongLink
     mov bx, 15
     @@PushLoop:
@@ -216,8 +221,9 @@ AsciToInt proc
     ret
 endp
 
-DateTime_UnixToStr proc C far uses si ebx ds eax ecx edx
-arg @DateTime:dword, StrLongLink:dword
+DateTime_UnixToStr proc C far uses si ebx ds ecx edx
+@DateTime   equ [esp+20]
+StrLongLink equ [esp+24]
     lds si, StrLongLink
     mov eax, @DateTime
     call DateTime_GetHourMinuteSecond
@@ -251,6 +257,8 @@ arg @DateTime:dword, StrLongLink:dword
     mov ax, dx
     call InToAsci
     mov [si+2], ax
+    mov [si+19], byte ptr 0
+    mov eax, 19
     ret
 endp
 
@@ -285,7 +293,8 @@ DateTime_GetNow proc C far uses ecx edx bx
 endp
 
 DateTime_AddMonth proc C far uses edx ebx ecx edi esi
-arg @DateTime:dword, AddMonth:word
+@DateTime   equ [esp+24]
+AddMonth    equ [esp+28]
     xor edx, edx
     mov eax, @DateTime
     mov esi, 24*3600
@@ -314,7 +323,8 @@ arg @DateTime:dword, AddMonth:word
 endp
 
 DateTime_AddYear proc C far uses edx ebx ecx
-arg @DateTime:dword, @AddYear:word
+@DateTime   equ [esp+16]
+@AddYear    equ [esp+20]
     mov eax, @DateTime
     xor edx, edx
     mov ecx, 24*3600
@@ -328,7 +338,7 @@ arg @DateTime:dword, @AddYear:word
 endp
 
 TimeSpan_GetSecond proc c far uses edx ebx ecx si
-arg @TimeSpan:DWORD
+@TimeSpan equ [esp+18]
     mov eax, @TimeSpan
     mov esi, 1
     @@Abs:
@@ -343,7 +353,7 @@ arg @TimeSpan:DWORD
 endp
 
 TimeSpan_GetMinute proc c far uses edx ebx ecx si
-arg @TimeSpan:DWORD
+@TimeSpan equ [esp+18]
     mov eax, @TimeSpan
     mov esi, 1
     @@Abs:
@@ -358,7 +368,7 @@ arg @TimeSpan:DWORD
 endp
 
 TimeSpan_GetHour proc c far uses edx ebx ecx si
-arg @TimeSpan:DWORD
+@TimeSpan equ [esp+18]
     mov eax, @TimeSpan
     mov esi, 1
     @@Abs:
@@ -373,9 +383,9 @@ arg @TimeSpan:DWORD
 endp
 
 TimeSpan_GetDay proc c far uses edx ebx esi
-arg @@TimeSpan:dword 
+@TimeSpan equ dword ptr [esp+12]
     xor edx, edx
-    mov eax, @@TimeSpan
+    mov eax, @TimeSpan
     mov esi, 1
     @@Abs:
         neg esi
@@ -389,7 +399,10 @@ arg @@TimeSpan:dword
 endp
 
 TimeSpan_InToUnix proc C far uses edx esi
-arg @Days:WORD, @Hours:WORD, @Minutes:WORD, @Seconds:WORD
+@Days       equ word ptr [esp+12]
+@Hours      equ word ptr [esp+14]
+@Minutes    equ word ptr [esp+16]
+@Seconds    equ word ptr [esp+18]
     xor edx, edx
     movsx eax, @Days
     mov esi, 24
@@ -407,8 +420,9 @@ arg @Days:WORD, @Hours:WORD, @Minutes:WORD, @Seconds:WORD
     ret
 endp
 
-TimeSpan_UnixToStr proc C far uses edx ecx ebx eax si
-arg @TimeSpan:DWORD, StrLongLink:DWORD
+TimeSpan_UnixToStr proc C far uses edx ecx ebx si ds
+@TimeSpan   equ dword ptr [esp+20]
+StrLongLink equ [esp+24]
     lds si, StrLongLink
     mov eax, @TimeSpan
     mov [si], byte ptr '/'
@@ -447,11 +461,13 @@ arg @TimeSpan:DWORD, StrLongLink:DWORD
     mov ax, dx
     call InToAsci
     mov [si+4], ax
+    mov [si+15], byte ptr 0
+    mov eax, 15
     ret
 endp
 
-TimeSpan_StrToUnix proc C far uses edx ecx ebx si edi
-arg LStrLink:DWORD
+TimeSpan_StrToUnix proc C far uses edx ecx ebx si edi ds
+LStrLink equ [esp+20]
     lds si, LStrLink
     mov edi, 1
     cmp [si], byte ptr '-'
