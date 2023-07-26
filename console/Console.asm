@@ -85,43 +85,30 @@ Console_WriteLine proc C far uses ax
     ret
 endp
 
-Console_ReadLine proc C far uses si di ds edx
-@@StrOffset equ [esp+14]
-@@MaxLen equ [esp+18]
+Console_ReadLine proc C far uses edx ds
+@@StrLink equ [esp+10]
+@@MaxLen equ [esp+14]
     xor edx, edx
-    lds dx, @@StrOffset
-    xor eax, eax
-    mov al, @@MaxLen
-    mov di, [edx+eax]
-    push word ptr [edx+eax]
+    mov ds, dx
+    mov dx, @@StrLink+2                 ;╨╖╨░╨│╤А╤Г╨╖╨║╨░ ╨┤╨╗╨╕╨╜╨╜╨╛╨│╨╛ ╤Г╨║╨░╨╖╨░╤В╨╡╨╗╤П
+    shl edx, 4
+    movzx eax, word ptr @@StrLink       ;╨▓ 32-╨▒╨╕╤В╨╜╤Л╨╣ ╤А╨╡╨│╨╕╤Б╤В╤А
+    lea edx, [edx+eax-2]
+    mov al, byte ptr @@MaxLen
+    push word ptr [edx]
     mov [edx], al
     mov ah, 0Ah
     int 21h
-    shl eax, 24
-    lea di, [edx-1]
-    mov ah, [di+2]
-    lea si, [di+2]
-    @@:
-        inc si
-        inc di
-        mov al, [si] 
-        cmp al, 0dh
-        jne @@NoEnd
-            mov al, 0
-        @@NoEnd:
-        mov [di], al
-        jz @F
-    jmp @B
-    @@:
-    shr ax, 8
-    mov si, ax
-    shr eax, 24
-    pop word ptr [edx+eax]
-    mov di, [edx+eax]
-    mov ah, 0Eh
-    mov al, 0Ah
-    int 10h
-    mov ax, si
+    xor eax, eax
+    mov al, [edx+1]
+    mov [edx+eax+2], byte ptr 0
+    pop word ptr [edx]
+    mov ah, 02h
+    mov dh, al
+    mov dl, 0Ah
+    int 21h
+    xor eax, eax
+    mov al, dh
     ret
 endp
 
@@ -147,12 +134,12 @@ Console_SetColor proc C far uses ax dx bx ds
     mov bx, offset EscPrint2
     cmp @@TextAtr, 1000b
     jl @@nobright
-        mov [bx], word ptr ';1';разворот задом наперед
+        mov [bx], word ptr ';1';разя┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜ред
         add bx, 2
     @@nobright:
     cmp @@BackAtr, 1000b
     jl @@noblink
-        mov [bx], word ptr ';5';разворот задом наперед
+        mov [bx], word ptr ';5';разя┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜ред
         add bx, 2
     @@noblink:
     cmp @@BackAtr, 1111b
@@ -172,7 +159,7 @@ Console_SetColor proc C far uses ax dx bx ds
         mov [bx+1], dl
         add bx, 3
     @@NoText:
-    mov [bx-1], word ptr '$m';разворот задом наперед
+    mov [bx-1], word ptr '$m';разя┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜ред
     mov dx, offset EscPrint1
     mov ah, 09h
     int 21h
