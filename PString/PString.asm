@@ -11,10 +11,10 @@ includelib c:\libs\Float32\Float32.lib
     extrn _Float32_ToString    :far
     extrn _Float32_FromString  :far
 includelib c:\libs\datetime\datetime.lib
-    extrn DateTime_UnixToStr  :far
-    extrn DateTime_StrToUnix  :far
-    extrn TimeSpan_UnixToStr  :far
-    extrn TimeSpan_StrToUnix  :far
+    extrn _DateTime_UnixToStr  :far
+    extrn _DateTime_StrToUnix  :far
+    extrn _TimeSpan_UnixToStr  :far
+    extrn _TimeSpan_StrToUnix  :far
 
 locals __
 
@@ -332,7 +332,7 @@ PString_DateStr proc C far uses ds di eax
 @@Int32Val equ [esp+20] ;+4 ��� ⮣� �⮡� ������ � �⥪
     mov ax, @@PStrLink
     inc ax
-    call DateTime_UnixToStr C, dword ptr @@Int32Val, word ptr @@PStrLink+2 ax
+    call _DateTime_UnixToStr C, dword ptr @@Int32Val, word ptr @@PStrLink+2 ax
     lds di, @@PStrLink
     mov [di], al
     ret
@@ -342,7 +342,7 @@ PString_DateVal proc C far uses ds edi
 @@PStrLink equ [esp+10]
     lds di, @@PStrLink
     call PrepareStr
-    call DateTime_StrToUnix C, word ptr @@PStrLink+2 di
+    call _DateTime_StrToUnix C, word ptr @@PStrLink+2 di
     ret
 endp
 
@@ -350,7 +350,7 @@ PString_TimeVal proc C far uses ds edi
 @@PStrLink equ [esp+10]
     lds di, @@PStrLink
     call PrepareStr
-    call TimeSpan_StrToUnix C, word ptr @@PStrLink+2 di
+    call _TimeSpan_StrToUnix C, word ptr @@PStrLink+2 di
     ret
 endp
 
@@ -359,7 +359,7 @@ PString_TimeStr proc C far uses ds di eax
 @@Int32Val equ [esp+20] ;+4 ��� ⮣� �⮡� ������ � �⥪
     mov ax, @@PStrLink
     inc ax
-    call TimeSpan_UnixToStr C, dword ptr @@Int32Val, word ptr @@PStrLink+2 ax
+    call _TimeSpan_UnixToStr C, dword ptr @@Int32Val, word ptr @@PStrLink+2 ax
     lds di, @@PStrLink
     mov [di], al
     ret

@@ -1,8 +1,8 @@
-extrn C Float32_ToString    :far
+extrn C _Float32_ToString    :far
 extrn C Float32_Log         :far
 extrn C Float32_Lg          :far
 extrn C Float32_Ln          :far
-extrn C Float32_FromString  :far
+extrn C _Float32_FromString  :far
 extrn C Float32_ToRad       :far
 extrn C Float32_ToGrad      :far
 extrn C Float32_ArcSin      :far
@@ -12,11 +12,11 @@ extrn C Float32_Power       :far
 extrn C Float32_ToInt32     :far
 
 Float32 struc Global method{  
-        ToString:dword   = Float32_ToString
+        ToString:dword   = _Float32_ToString
         Log:dword        = Float32_Log
         Lg:dword         = Float32_Lg
         Ln:dword         = Float32_Ln
-        FromString:dword = Float32_FromString
+        FromString:dword = _Float32_FromString
         ToRad:dword      = Float32_ToRad
         ToGrad:dword     = Float32_ToGrad
         ArcSin:dword     = Float32_ArcSin
