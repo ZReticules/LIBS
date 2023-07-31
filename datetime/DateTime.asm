@@ -8,10 +8,10 @@ StartPoint equ 1980
 
 includelib c:\libs\datetime\datetime.lib
 
-extrn DateTime_GetHourMinuteSecond    :far
-extrn DateTime_GetYearMonthDay        :far
-extrn DateTime_InToUnix               :far
-extrn TimeSpan_InToUnix               :far
+extrn _DateTime_GetHourMinuteSecond    :far
+extrn _DateTime_GetYearMonthDay        :far
+extrn _DateTime_InToUnix               :far
+extrn _TimeSpan_InToUnix               :far
 public DateTime_GetSecond
 public DateTime_GetMinute
 public DateTime_GetHour
@@ -33,7 +33,7 @@ public DateTime_SetTime
 DateTime_GetSecond proc C far uses ecx ebx edx
 @DateTime equ [esp+16]
     mov eax, @DateTime
-    call DateTime_GetHourMinuteSecond
+    call _DateTime_GetHourMinuteSecond
     mov eax, ecx
     ret
 endp
@@ -41,7 +41,7 @@ endp
 DateTime_GetMinute proc C far uses ecx ebx edx
 @DateTime equ [esp+16]
     mov eax, @DateTime
-    call DateTime_GetHourMinuteSecond
+    call _DateTime_GetHourMinuteSecond
     mov eax, ebx
     ret
 endp
@@ -49,7 +49,7 @@ endp
 DateTime_GetHour proc C far uses ecx ebx edx
 @DateTime equ [esp+16]
     mov eax, @DateTime
-    call DateTime_GetHourMinuteSecond
+    call _DateTime_GetHourMinuteSecond
     mov eax, edx
     ret
 endp
@@ -57,7 +57,7 @@ endp
 DateTime_GetYear proc C far uses ecx ebx
 @DateTime equ [esp+12]
     mov eax, @DateTime
-    call DateTime_GetYearMonthDay
+    call _DateTime_GetYearMonthDay
     mov eax, ecx
     ret
 endp
@@ -65,7 +65,7 @@ endp
 DateTime_GetMonth proc C far uses ecx ebx
 @DateTime equ [esp+12]
     mov eax, @DateTime
-    call DateTime_GetYearMonthDay
+    call _DateTime_GetYearMonthDay
     mov eax, ebx
     ret
 endp
@@ -73,7 +73,7 @@ endp
 DateTime_GetDay proc C far uses ecx ebx
 @DateTime equ [esp+12]
     mov eax, @DateTime
-    call DateTime_GetYearMonthDay
+    call _DateTime_GetYearMonthDay
     ret
 endp
 
@@ -94,7 +94,7 @@ DateTime_GetNow proc C far uses ecx edx bx
     mov bl, dh
     push bx
     mov bx, cx
-    call DateTime_InToUnix StdCall, bx
+    call _DateTime_InToUnix StdCall, bx
     add esp, 12
     ret
 endp
@@ -107,7 +107,7 @@ AddMonth    equ [esp+28]
     mov esi, 24*3600
     div esi
     mov eax, @DateTime
-    call DateTime_GetYearMonthDay
+    call _DateTime_GetYearMonthDay
     mov di, ax
     dec bx
     mov si, 12
@@ -124,7 +124,7 @@ AddMonth    equ [esp+28]
     div si
     add ecx, eax
     inc edx
-    call DateTime_InToUnix C, cx, dx, di, 0, 0, 0
+    call _DateTime_InToUnix C, cx, dx, di, 0, 0, 0
     add eax, ebx
     ret
 endp
@@ -137,9 +137,9 @@ DateTime_AddYear proc C far uses edx ebx ecx
     mov ecx, 24*3600
     div ecx
     mov eax, @DateTime
-    call DateTime_GetYearMonthDay
+    call _DateTime_GetYearMonthDay
     add cx, @AddYear
-    call DateTime_InToUnix C, cx, bx, ax, 0, 0, 0
+    call _DateTime_InToUnix C, cx, bx, ax, 0, 0, 0
     add eax, edx
     ret
 endp
@@ -152,7 +152,7 @@ TimeSpan_GetSecond proc c far uses edx ebx ecx si
         neg esi
         neg eax
     js @@Abs
-    call DateTime_GetHourMinuteSecond
+    call _DateTime_GetHourMinuteSecond
     mov eax, ecx
     xor edx, edx
     imul esi
@@ -167,7 +167,7 @@ TimeSpan_GetMinute proc c far uses edx ebx ecx si
         neg esi
         neg eax
     js @@Abs
-    call DateTime_GetHourMinuteSecond
+    call _DateTime_GetHourMinuteSecond
     mov eax, ebx
     xor edx, edx
     imul esi
@@ -182,7 +182,7 @@ TimeSpan_GetHour proc c far uses edx ebx ecx si
         neg esi
         neg eax
     js @@Abs
-    call DateTime_GetHourMinuteSecond
+    call _DateTime_GetHourMinuteSecond
     mov eax, edx
     xor edx, edx
     imul esi
@@ -237,7 +237,7 @@ endp
 
 DateTime_SetDate proc C far uses eax ebx ecx
     mov eax, [esp+16]
-    call DateTime_GetYearMonthDay
+    call _DateTime_GetYearMonthDay
     mov dl, al
     mov dh, bl
     mov ah, 2bh
@@ -247,7 +247,7 @@ endp
 ;следующая процедура не работает в DosBox.
 DateTime_SetTime proc C far uses eax ebx ecx edx
     mov eax, [esp+20]
-    call DateTime_GetHourMinuteSecond
+    call _DateTime_GetHourMinuteSecond
     mov dh, cl
     xchg ch, dl
     mov cl, bl

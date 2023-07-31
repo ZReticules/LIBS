@@ -32,6 +32,8 @@ FastDiv10 macro arg:req
 endm
 
 FastDiv10_WithOst macro reg32:req
+.ERRIDNI <reg32>, <eax> "Wrong register, don't use eax or edx"
+.ERRIDNI <reg32>, <edx> "Wrong register, don't use eax or edx"
     mov reg32, FastDiv10_Const
     push eax
     mul reg32
