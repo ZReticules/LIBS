@@ -1,14 +1,14 @@
-extrn Console_SetCursorPos      :far
-extrn Console_GetCursorPos      :far
-extrn Console_PutChar           :far
-extrn Console_GetChar           :far
-extrn Console_Write             :far
-extrn Console_WriteLine         :far
-extrn Console_ReadLine          :far
-extrn Console_Clear             :far
-extrn Console_SetColor          :far
-extrn Console_ClearColor        :far
-extrn Console_GetKeyboardState  :far
+extrn C Console_SetCursorPos        :far
+extrn C Console_GetCursorPos        :far
+extrn C Console_PutChar             :far
+extrn C Console_GetChar             :far
+extrn C Console_Write               :far
+extrn C Console_WriteLine           :far
+extrn C Console_ReadLine            :far
+extrn C Console_Clear               :far
+extrn Console_SetColor              :far
+extrn Console_ClearColor            :far
+extrn C Console_GetKeyboardState    :far
 
 ECHO_ON     equ 1h
 ECHO_OFF    equ 8h

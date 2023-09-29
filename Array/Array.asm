@@ -11,6 +11,7 @@ public Array_New
 public Array_GetBlockSize
 public Array_GetElemSize
 public Array_GetLength
+public Array_FromStatic
 
 locals __
 
@@ -72,6 +73,29 @@ Array_GetElemSize proc C far uses ds cx
     mov cl, ds:[ElementSize]
     mov ax, 1
     shl ax, cl
+    ret
+endp
+
+Array_FromStatic proc C far uses es edi ds esi
+@@ArgType   equ word ptr    [esp+16]
+@@StatLink  equ dword ptr   [esp+18]
+@@ArgsSize  equ word ptr    [esp+22]
+    mov ax, @@ArgsSize
+    bsr cx, @@ArgType
+    shr ax, cl
+    call Array_New StdCall, @@ArgType+2, ax
+    lea sp, [esp+4]
+    xor esi, esi
+    mov edi, esi
+    lds si, @@StatLink
+    rol eax, 16
+    mov es, ax
+    rol eax, 16
+    mov cx, @@ArgsSize
+    dec cx
+    shr cx, 2
+    inc cx
+    rep movsd
     ret
 endp
 
