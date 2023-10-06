@@ -90,9 +90,9 @@ Console_ReadLine proc C far uses edx ds
 @@MaxLen equ [esp+14]
     xor edx, edx
     mov ds, dx
-    mov dx, @@StrLink+2                 ;╨╖╨░╨│╤А╤Г╨╖╨║╨░ ╨┤╨╗╨╕╨╜╨╜╨╛╨│╨╛ ╤Г╨║╨░╨╖╨░╤В╨╡╨╗╤П
+    mov dx, @@StrLink+2                 ;загрузка длинного указателя
     shl edx, 4
-    movzx eax, word ptr @@StrLink       ;╨▓ 32-╨▒╨╕╤В╨╜╤Л╨╣ ╤А╨╡╨│╨╕╤Б╤В╤А
+    movzx eax, word ptr @@StrLink       ;в 32-битный регистр
     lea edx, [edx+eax-2]
     mov al, byte ptr @@MaxLen
     push word ptr [edx]
@@ -134,12 +134,12 @@ Console_SetColor proc C far uses ax dx bx ds
     mov bx, offset EscPrint2
     cmp @@TextAtr, 1000b
     jl @@nobright
-        mov [bx], word ptr ';1';разя┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜ред
+        mov [bx], word ptr ';1';яркость по 4 биту текста
         add bx, 2
     @@nobright:
     cmp @@BackAtr, 1000b
     jl @@noblink
-        mov [bx], word ptr ';5';разя┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜ред
+        mov [bx], word ptr ';5';мерцание по 4 биту фона
         add bx, 2
     @@noblink:
     cmp @@BackAtr, 1111b
@@ -159,7 +159,7 @@ Console_SetColor proc C far uses ax dx bx ds
         mov [bx+1], dl
         add bx, 3
     @@NoText:
-    mov [bx-1], word ptr '$m';разя┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜ред
+    mov [bx-1], word ptr '$m';m завершает команду смены цвета
     mov dx, offset EscPrint1
     mov ah, 09h
     int 21h
