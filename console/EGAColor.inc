@@ -17,7 +17,13 @@ EGAColors_BrightWhite    equ byte ptr 1111b
 EGAColors_NoColor        equ byte ptr -1
 EGAColors_BrightOnly     equ byte ptr 10000b
 
-EGAColor struc
+extrn C EGAColor_ChgColor   :far
+extrn Console_SetColor      :far
+extrn Console_ClearColor    :far
+
+EGAColor struc global method {          ;ARGS
+        Change:dword = EGAColor_ChgColor;EGAColors:WORD(⮫쪮 1 梥�), Red:WORD, Green:WORD, Blue:WORD
+    }
     Text db EGAColors_White
     Back db EGAColors_Black
 ends 

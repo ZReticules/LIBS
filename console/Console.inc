@@ -6,8 +6,6 @@ extrn C Console_Write               :far
 extrn C Console_WriteLine           :far
 extrn C Console_ReadLine            :far
 extrn C Console_Clear               :far
-extrn Console_SetColor              :far
-extrn Console_ClearColor            :far
 extrn C Console_GetKeyboardState    :far
 
 ECHO_ON     equ 1h

@@ -90,9 +90,9 @@ Console_ReadLine proc C far uses edx ds
 @@MaxLen equ [esp+14]
     xor edx, edx
     mov ds, dx
-    mov dx, @@StrLink+2                 ;§ £àã§ª  ¤«¨­­®£® ãª § â¥«ï
+    mov dx, @@StrLink+2                 ;ï¿½ï¿½ï¿½ï¿½ã§ªï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ãª ï¿½ï¿½â¥«ï¿½
     shl edx, 4
-    movzx eax, word ptr @@StrLink       ;¢ 32-¡¨â­ë© à¥£¨áâà
+    movzx eax, word ptr @@StrLink       ;ï¿½ 32-ï¿½ï¿½ï¿½ï¿½ à¥£ï¿½ï¿½ï¿½ï¿½
     lea edx, [edx+eax-2]
     mov al, byte ptr @@MaxLen
     push word ptr [edx]
@@ -134,12 +134,12 @@ Console_SetColor proc C far uses ax dx bx ds
     mov bx, offset EscPrint2
     cmp @@TextAtr, 1000b
     jl @@nobright
-        mov [bx], word ptr ';1';ïàª®áâì ¯® 4 ¡¨âã â¥ªáâ 
+        mov [bx], word ptr ';1';ï¿½àª®ï¿½ï¿½ï¿½ ï¿½ï¿½ 4 ï¿½ï¿½ï¿½ï¿½ â¥ªï¿½ï¿½
         add bx, 2
     @@nobright:
     cmp @@BackAtr, 1000b
     jl @@noblink
-        mov [bx], word ptr ';5';¬¥àæ ­¨¥ ¯® 4 ¡¨âã ä®­ 
+        mov [bx], word ptr ';5';ï¿½ï¿½ï¿½æ ­ï¿½ï¿½ ï¿½ï¿½ 4 ï¿½ï¿½ï¿½ï¿½ ä®­ï¿½
         add bx, 2
     @@noblink:
     cmp @@BackAtr, 1111b
@@ -159,7 +159,7 @@ Console_SetColor proc C far uses ax dx bx ds
         mov [bx+1], dl
         add bx, 3
     @@NoText:
-    mov [bx-1], word ptr '$m';m § ¢¥àè ¥â ª®¬ ­¤ã á¬¥­ë æ¢¥â 
+    mov [bx-1], word ptr '$m';m ï¿½ï¿½ï¿½ï¿½ï¿½è ¥ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ á¬¥ï¿½ï¿½ æ¢¥ï¿½
     mov dx, offset EscPrint1
     mov ah, 09h
     int 21h

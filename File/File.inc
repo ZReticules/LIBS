@@ -8,16 +8,16 @@ extrn C File_Create     :far
 extrn C File_Close      :far
 extrn C File_Delete     :far
 
-File struc global method {
-        GetPointer:dword    = File_GetPointer
-        SetPointer:dword    = File_SetPointer
-        GetSize:dword       = File_GetSize
-        Open:dword          = File_Open
-        ReadBytes:dword     = File_ReadBytes
-        WriteBytes:dword    = File_WriteBytes
-        Create:dword        = File_Create
-        Close:dword         = File_Close
-        Delete:dword        = File_Delete
+File struc global method {                      ;ARGS:
+        GetPointer:dword    = File_GetPointer   ;FHandle:WORD
+        SetPointer:dword    = File_SetPointer   ;FHandle:WORD, Position:WORD, Mode:WORD
+        GetSize:dword       = File_GetSize      ;FHandle:WORD
+        Open:dword          = File_Open         ;PathLink:DWORD(ASCIIZ)
+        ReadBytes:dword     = File_ReadBytes    ;FHandle:WORD, DesLink:DWORD, ByteCount:WORD
+        WriteBytes:dword    = File_WriteBytes   ;FHandle:WORD, SrcLink:DWORD, BtCount:WORD
+        Create:dword        = File_Create       ;PathLink:DWORD(ASCIIZ)
+        Close:dword         = File_Close        ;FHandle:WORD
+        Delete:dword        = File_Delete       ;PathLink:DWORD(ASCIIZ)
     }
     FHandle     dw ?
 ends
